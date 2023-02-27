@@ -1,0 +1,34 @@
+version: '3'
+services:
+  postgres:
+    image: "postgres"
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=root      
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - ./postgres/postgres-data/:/var/lib/postgresql/data
+    networks:
+      - crud-golang
+
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "luis@go.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "54321:80"
+    depends_on:
+      - postgres
+    networks:
+      - crud-golang
+networks:
+  crud-golang:
+    driver: bridge
